@@ -1,21 +1,28 @@
 Package: logitbcfbma
-Title: What the Package Does (One Line, Title Case)
+Type: Package
+Title: Logit Bayesian Causal Forests using Bayesian Model Averaging
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "Eoghan",
-           family = "O'Neill",
-           role = c("aut", "cre"),
-           email = "oneill.eoghan.1@gmail.com")
-Description: What the package does (one paragraph).
+Date: 2020-05-11
+Author: Eoghan O'Neill
+Maintainer: Eoghan O'Neill <oneill.eoghan.1@gmail.com>
+Description: This package implements the BCF-BMA algorothm for binary outcomes. Each logistic sum-of-trees model is estimated using Laplace approximations.
 License: GPL-3
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.1.0
-LinkingTo: 
-    Rcpp,
-    RcppArmadillo
+LinkingTo: Rcpp,
+    RcppArmadillo,
+    RcppNumerical,
+    RcppEigen,
+    dqrng,
+    BH,
+    sitmo
 Imports: 
-    Rcpp
+    Rcpp,
+    dqrng,
+    mvnfast,
+    Rdpack
 URL: https://github.com/EoghanONeill/logitbcfbma
 BugReports: https://github.com/EoghanONeill/logitbcfbma/issues
