@@ -81,7 +81,7 @@ logitbcfBMA<-function(x.train,y.train,z,pihat,
                           x.test=matrix(0.0,0,0),test_z = numeric(),test_pihat = matrix(0.0,0,0),
                           ntree_control=5,ntree_moderate=5,
                           alpha_mu=0.95,alpha_tau=0.95,beta_mu=1,beta_tau=1,split_rule_node=0,
-                          gridpoint=0,maxOWsize=100, num_splits_mu =5, num_splits_tau =5, gridsize_mu=10, gridsize_tau=10,
+                          gridpoint=1,maxOWsize=100, num_splits_mu =5, num_splits_tau =5, gridsize_mu=10, gridsize_tau=10,
                           include_pi= "control", zero_split=1, only_max_num_trees=1, mu_or_tau_each_round=1,separate_tree_numbers=1,
                          min_num_obs_for_mu_split=2, min_num_obs_after_mu_split=2,
                          min_num_obs_for_tau_split=2, min_num_obs_after_tau_split=2,
@@ -208,7 +208,13 @@ logitbcfBMA<-function(x.train,y.train,z,pihat,
     is_test_data=1
   }
 
-  if(mu_or_tau_each_round==1){
+  if(mu_or_tau_each_round!=1){
+    stop("mu_or_tau_each_round==0 not currently supported")
+    }
+
+  #if(mu_or_tau_each_round==1){
+    print("Begin C++ code")
+
   bcfBMA_call=BCF_BMA_sumLikelihood_add_mu_or_tau(spike_tree,
                                                   s_t_hyperprior,
                                                   p_s_t_mu,
@@ -271,8 +277,9 @@ logitbcfBMA<-function(x.train,y.train,z,pihat,
                                                   lower_prob,
                                                   upper_prob,
                                                   num_iter)
-  }else{
-    stop("mu_or_tau_each_round==0 not currently supported")
+  print("Finished C++ code")
+  #}else{
+    #stop("mu_or_tau_each_round==0 not currently supported")
 
     # bcfBMA_call=BCF_BMA_sumLikelihood(spike_tree,s_t_hyperprior,
     #                                   p_s_t_mu, a_s_t_mu,b_s_t_mu,
@@ -291,7 +298,7 @@ logitbcfBMA<-function(x.train,y.train,z,pihat,
     #                                   min_num_obs_for_tau_split, min_num_obs_after_tau_split,
     #                                   exact_residuals,
     #                                   transform_resids)
-  }
+  #}
 
 
   if(is_test_data==1){
@@ -307,7 +314,6 @@ logitbcfBMA<-function(x.train,y.train,z,pihat,
                             "ITE_ests_outsamp",
                             "ITE_intervals_outsamp",
                             "CATE_est_outsamp",
-                            "CATE_est_insamp",
                             "CATE_intervals_insamp",
                             "CATE_intervals_outsamp")
 
@@ -322,8 +328,7 @@ logitbcfBMA<-function(x.train,y.train,z,pihat,
                             "obs_to_termNodesMatrix_tau",
                             "ITE_ests_outsamp",
                             "ITE_intervals_outsamp",
-                            "CATE_est_outsamp",
-                            "CATE_est_insamp")
+                            "CATE_est_outsamp")
 
     }
     bcfBMA_call$test_data<-x.test
@@ -339,7 +344,6 @@ logitbcfBMA<-function(x.train,y.train,z,pihat,
                             "sumoftrees_tau",
                             "obs_to_termNodesMatrix_mu",
                             "obs_to_termNodesMatrix_tau",
-                            "CATE_est_insamp",
                             "CATE_intervals_insamp")
 
 
@@ -351,8 +355,7 @@ logitbcfBMA<-function(x.train,y.train,z,pihat,
                             "sumoftrees_mu",
                             "sumoftrees_tau",
                             "obs_to_termNodesMatrix_mu",
-                            "obs_to_termNodesMatrix_tau",
-                            "CATE_est_insamp")
+                            "obs_to_termNodesMatrix_tau")
 
     }
   }
@@ -363,7 +366,7 @@ logitbcfBMA<-function(x.train,y.train,z,pihat,
   #bcfBMA_call[[5]]<-bcfBMA_call[[5]]#[[length(bcfBMA_call[[5]])]]
   #bcfBMA_call[[6]]<-bcfBMA_call[[6]]#[[length(bcfBMA_call[[6]])]]
   #bcfBMA_call[[7]]<-bcfBMA_call[[7]]#[[length(bcfBMA_call[[7]])]]
-  b#cfBMA_call$y_minmax<-range(y.train)
+  #bcfBMA_call$y_minmax<-range(y.train)
   bcfBMA_call$response<-y.train
   bcfBMA_call$nrowTrain<-nrow(x.train)
   bcfBMA_call$sigma<-sigma

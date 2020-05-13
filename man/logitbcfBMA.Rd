@@ -28,7 +28,7 @@ logitbcfBMA(
   beta_mu = 1,
   beta_tau = 1,
   split_rule_node = 0,
-  gridpoint = 0,
+  gridpoint = 1,
   maxOWsize = 100,
   num_splits_mu = 5,
   num_splits_tau = 5,

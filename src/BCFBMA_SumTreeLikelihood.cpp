@@ -7196,7 +7196,7 @@ List make_gridpoint_cpmat_tau_bcf(NumericMatrix data,NumericVector resp,int grid
   // create vector of residuals for treated households only
   arma::vec resp_treat_a = resp_a.elem(arma::find(z_ar==1));
   //NumericVector resp_treat = wrap(resp_treat_a);
-
+  arma::vec p_1_minus_p_treat = p_1_minus_p.elem(arma::find(z_ar==1));
 
   int err1=0;											// create variable err1. Initialize equal to 0.
   int numvar = x_mod_treat.ncol();							// numvar is number of columns in the input matrix x_mod_treat.
@@ -7210,7 +7210,7 @@ List make_gridpoint_cpmat_tau_bcf(NumericMatrix data,NumericVector resp,int grid
     NumericVector coli=x_mod_treat(_,i);					// coli is i+1^th column of x_mod_treat.	(x_mod_treat is the X matrix)
     //arma::vec coli_ar=as<arma::vec>(coli);			// convert coli to  arma vec.
     //arma::vec t=Rcpp::as<arma::vec>(resp_treat);			// t is input resp_treat converted to arma vec. (resp_treat is the residuals?)
-    List ans1 = gridCP_bcf(coli,resp_treat_a,p_1_minus_p,
+    List ans1 = gridCP_bcf(coli,resp_treat_a,p_1_minus_p_treat,
                            gridsize);			// apply gridCP_bcf (defined on line 1500) to column i+1. returns list of two elements.
     NumericVector ans2=ans1[0];						// vector of viable splitting values of the variable in the i+1^th column.
     NumericVector cp_strength=ans1[1];				// vector of residual sums of squares from the splits.
@@ -19581,7 +19581,7 @@ List BCF_BMA_sumLikelihood_add_mu_or_tau(double spike_tree, int s_t_hyperprior,
       throw std::range_error("Response length is greater than the number of observations in the data");
     }
   }
-  //Rcout << "LINE 7678.\n";
+  //Rcout << "LINE 19584.\n";
 
   if(z.size() !=data.nrow()){				// If the length of input vector z is not equal to the nunber of rows in the input data (covariates)
     if(z.size()<data.nrow()){			// If the length of z is less than the number of rows in data
@@ -20096,6 +20096,7 @@ List BCF_BMA_sumLikelihood_add_mu_or_tau(double spike_tree, int s_t_hyperprior,
 
 
 
+      //Rcout << "LINE 20099.\n";
 
       // Rcout << "Get to Line 16493. Before getting best  mu trees in loop j = " << j << ".\n";
 
@@ -20104,6 +20105,7 @@ List BCF_BMA_sumLikelihood_add_mu_or_tau(double spike_tree, int s_t_hyperprior,
 
         arma::vec p_1_minus_p = 0.25*arma::ones<arma::vec>(n);
 
+        //Rcout << "LINE 20108.\n";
 
         CART_BMA_mu=get_best_trees_mu_bcf_2(spike_tree, s_t_hyperprior,
                                             p_s_t_mu, a_s_t_mu, b_s_t_mu,
@@ -20133,6 +20135,7 @@ List BCF_BMA_sumLikelihood_add_mu_or_tau(double spike_tree, int s_t_hyperprior,
 
       }else{							// If not in the first round of the for-loop.
         //if j >0 then sum of trees become a list so need to read in list and get likelihood for each split point and terminal node
+        //Rcout << "LINE 20138.\n";
 
         CART_BMA_mu=get_best_trees_sum_mu_bcf_2(spike_tree, s_t_hyperprior,
                                                 p_s_t_mu, a_s_t_mu, b_s_t_mu,
@@ -20208,6 +20211,7 @@ List BCF_BMA_sumLikelihood_add_mu_or_tau(double spike_tree, int s_t_hyperprior,
 
       //Rcout << "Get to Line 15415 in loop j = " << j << ".\n";
 
+      //Rcout << "LINE 20214.\n";
 
 
       if(j==0){									// If in the first round of the for-loop.
@@ -20333,6 +20337,7 @@ List BCF_BMA_sumLikelihood_add_mu_or_tau(double spike_tree, int s_t_hyperprior,
       // }
 
 
+      //Rcout << "LINE 20340.\n";
 
       //Rcout << "Get to 15483 in loop j = " << j << ".\n";
       // Rcout << "Get to before get best tau trees  in line 16689 in loop j = " << j << ".\n";
