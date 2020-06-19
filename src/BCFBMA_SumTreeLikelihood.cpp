@@ -1809,7 +1809,7 @@ public:
     }
     //prob[i] = R::log1pexp(xbeta[i]);
     negloglik = prob.sum() - yxbeta ;
-    const double f = negloglik - (lambda/2)*beta.squaredNorm();
+    const double f = negloglik + 0.5*(lambda)*beta.squaredNorm();
 
     // Gradient
     //   X' * (p - y), p = exp(X * beta) / (1 + exp(X * beta))
@@ -1891,8 +1891,8 @@ public:
     //prob[i] = R::log1pexp(xbeta[i]);
     negloglik = prob.sum() - yxbeta ;
     const double f = negloglik
-      - (a_mu/2)*(beta.head(b_mu)).squaredNorm()
-      - (a_tau/2)*(beta.tail(b_tau)).squaredNorm();
+      + 0.5*(a_mu)*(beta.head(b_mu)).squaredNorm()
+      + 0.5*(a_tau)*(beta.tail(b_tau)).squaredNorm();
 
       // Gradient
       //   X' * (p - y), p = exp(X * beta) / (1 + exp(X * beta))
@@ -1983,7 +1983,8 @@ List likelihood_function_exact_bcf(arma::vec y_arma,
 
   Hmat.diag() += a;
 
-  double templik0 = 0.5*beta.size()*std::log(a) -nll.negloglikout() - 0.5*real(arma::log_det(Hmat)) ;
+  double templik0 = 0.5*beta.size()*std::log(a) -nll.negloglikout() -
+    0.5*real(arma::log_det(Hmat)) - 0.5*(a)*beta.squaredNorm();
 
   arma::mat invHmat= arma::inv_sympd(Hmat);
   arma::vec mapcoeffs= arma::vec(beta.data(),
@@ -2183,7 +2184,8 @@ List sumtree_likelihood_function_exact_bcf(arma::vec y_arma,//NumericVector y_te
   double templik0 = 0.5*b_mu*std::log(a_mu)+
     0.5*b_tau*std::log(a_tau) -
     nll.negloglikout() -
-    0.5*real(arma::log_det(Hmat)) ;
+    0.5*real(arma::log_det(Hmat)) - 0.5*(a_mu)*(beta.head(b_mu)).squaredNorm()
+    - 0.5*(a_tau)*(beta.tail(b_tau)).squaredNorm() ;
 
   arma::mat invHmat= arma::inv_sympd(Hmat);
   arma::vec mapcoeffs= arma::vec(beta.data(),
@@ -2389,7 +2391,7 @@ List sumtree_likelihood_tau_round1_exact_bcf(arma::vec y_arma,//NumericVector y_
 
   double templik0 = 0.5*beta.size()*std::log(a_tau) -
     nll.negloglikout() -
-    0.5*real(arma::log_det(Hmat)) ;
+    0.5*real(arma::log_det(Hmat)) - 0.5*(a_tau)*beta.squaredNorm();
 
   arma::mat invHmat= arma::inv_sympd(Hmat);
   arma::vec mapcoeffs= arma::vec(beta.data(),
